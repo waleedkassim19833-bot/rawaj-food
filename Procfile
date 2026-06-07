@@ -1,1 +1,1 @@
-web: gunicorn rawaj.wsgi 
+web: python manage.py migrate && gunicorn rawaj.wsgi
