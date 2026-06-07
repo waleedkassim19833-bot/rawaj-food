@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }} - رواج الغذاء</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial; background: #f8f8f8; }
+        header {
+            background: #c0392b;
+            color: white;
+            padding: 15px 30px;
+        }
+        header h1 { font-size: 22px; }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 0;
+        }
+        .product-img {
+            width: 45%;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 40px;
+            width: 55%;
+        }
+        .product-info h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .category {
+            background: #fde8e8;
+            color: #c0392b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .description {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+        .price {
+            font-size: 32px;
+            color: #c0392b;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        .price span { font-size: 18px; }
+        .available {
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .btn-back {
+            display: inline-block;
+            background: #c0392b;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-back:hover { background: #a93226; }
+        footer {
+            background: #222;
+            color: #aaa;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🍞 رواج الغذاء — Dulcesol</h1>
+</header>
+
+<div class="container">
+    {% if product.image %}
+    <img class="product-img" src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+    <div class="product-info">
+        <h2>{{ product.name }}</h2>
+        <span class="category">{{ product.category }}</span>
+        <p class="description">{{ product.description }}</p>
+        <div class="price">{{ product.price }} <span>ريال</span></div>
+        {% if product.available %}
+        <p class="available">✅ متوفر في المخزون</p>
+        {% endif %}
+        <a href="{% url 'home' %}" class="btn-back">← العودة للمنتجات</a>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 رواج الغذاء — الوكيل الرسمي لـ Dulcesol في المملكة العربية السعودية</p>
+</footer>
+
+</body>
+</html>
