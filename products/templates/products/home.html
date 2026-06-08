@@ -4,138 +4,600 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>رواج الغذاء - Dulcesol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --red: #C8102E;
+            --dark-red: #8B0A1E;
+            --gold: #D4A843;
+            --dark: #0f0505;
+            --card-bg: #1a0a08;
+            --white: #FFFFFF;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial; background: #f8f8f8; }
-
-        /* الهيدر */
-        header {
-            background: #c0392b;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
         }
-        header h1 { font-size: 24px; }
-        header span { font-size: 13px; opacity: 0.85; }
 
-        /* الهيرو */
+        /* ===== NAVBAR ===== */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            padding: 16px 48px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(15,5,5,0.6);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212,168,67,0.15);
+            transition: all 0.4s;
+        }
+        nav.scrolled {
+            padding: 10px 48px;
+            background: rgba(15,5,5,0.97);
+        }
+        .logo {
+            font-size: 1.7rem; font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), #fff, var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200%;
+            animation: shimmer 4s linear infinite;
+        }
+        .logo span { -webkit-text-fill-color: var(--red); }
+        @keyframes shimmer { to { background-position: -200% center; } }
+        .nav-subtitle {
+            font-size: 0.75rem; color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+        }
+
+        /* ===== HERO ===== */
         .hero {
-            background: linear-gradient(135deg, #c0392b, #e74c3c);
-            color: white;
-            text-align: center;
-            padding: 60px 20px;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+            background: radial-gradient(ellipse at 40% 60%, #3d0612 0%, #1a0505 45%, #0f0505 100%);
         }
-        .hero h2 { font-size: 38px; margin-bottom: 10px; }
-        .hero p { font-size: 18px; opacity: 0.9; }
+        /* grain texture */
+        .hero::after {
+            content: '';
+            position: absolute; inset: 0; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+            opacity: 0.5; z-index: 1;
+        }
+        /* glowing orbs */
+        .orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(90px); pointer-events: none;
+            animation: floatOrb 9s ease-in-out infinite;
+        }
+        .orb-1 { width:500px; height:500px; background:var(--red); opacity:0.25; top:-80px; right:-80px; animation-delay:0s; }
+        .orb-2 { width:350px; height:350px; background:var(--gold); opacity:0.12; bottom:-60px; left:15%; animation-delay:-4s; }
+        .orb-3 { width:250px; height:250px; background:#ff4500; opacity:0.1; top:40%; left:5%; animation-delay:-7s; }
+        @keyframes floatOrb {
+            0%,100%{ transform: translateY(0) scale(1); }
+            50%{ transform: translateY(-35px) scale(1.06); }
+        }
+        /* rotating ring */
+        .hero-ring {
+            position: absolute; width: 650px; height: 650px;
+            border-radius: 50%;
+            border: 1px solid rgba(212,168,67,0.12);
+            top: 50%; left: 50%; transform: translate(-50%,-50%);
+            animation: spin 50s linear infinite;
+            pointer-events: none; z-index: 2;
+        }
+        .hero-ring::before {
+            content: ''; position: absolute; inset: 80px; border-radius: 50%;
+            border: 1px solid rgba(200,16,46,0.15);
+            animation: spin 25s linear infinite reverse;
+        }
+        @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
 
-        /* الفئات */
-        .categories {
-            display: flex;
-            gap: 10px;
-            padding: 20px 30px;
-            flex-wrap: wrap;
+        .hero-content {
+            position: relative; z-index: 5;
+            text-align: center; padding: 120px 32px 80px;
+            max-width: 860px;
         }
-        .cat-btn {
-            background: white;
-            border: 2px solid #c0392b;
-            color: #c0392b;
-            padding: 8px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(212,168,67,0.08);
+            border: 1px solid rgba(212,168,67,0.25);
+            border-radius: 40px; padding: 8px 22px;
+            font-size: 0.75rem; color: var(--gold); font-weight: 700;
+            margin-bottom: 28px; letter-spacing: 2px;
+            animation: fadeDown 0.8s ease both;
         }
-        .cat-btn:hover { background: #c0392b; color: white; }
+        .badge-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--gold);
+            animation: pulseDot 2s ease infinite;
+        }
+        @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
 
-        /* المنتجات */
+        .hero h1 {
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-weight: 900; line-height: 1.08;
+            margin-bottom: 18px;
+            animation: fadeUp 0.9s ease 0.2s both;
+        }
+        .hero h1 .line2 {
+            display: block;
+            background: linear-gradient(135deg, var(--gold) 0%, #fff 50%, var(--gold) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200%;
+            animation: shimmer 3s linear infinite;
+        }
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: rgba(255,255,255,0.45); line-height: 1.9;
+            margin-bottom: 48px; font-weight: 300;
+            animation: fadeUp 0.9s ease 0.4s both;
+        }
+        .hero-btns {
+            display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+            animation: fadeUp 0.9s ease 0.6s both;
+        }
+        .btn-red {
+            padding: 15px 38px; background: var(--red);
+            border: none; border-radius: 50px;
+            color: white; font-size: 1rem; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+            text-decoration: none; display: inline-block;
+            box-shadow: 0 8px 30px rgba(200,16,46,0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .btn-red::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .btn-red:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(200,16,46,0.55); }
+        .btn-red:hover::before { opacity: 1; }
+        .btn-ghost {
+            padding: 15px 38px;
+            border: 1px solid rgba(212,168,67,0.35); border-radius: 50px;
+            color: var(--gold); background: transparent;
+            font-size: 1rem; font-weight: 600; cursor: pointer; font-family: inherit;
+            text-decoration: none; display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-ghost:hover { background: rgba(212,168,67,0.1); border-color: var(--gold); transform: translateY(-3px); }
+
+        /* scroll hint */
+        .scroll-hint {
+            position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            z-index: 5; animation: fadeIn 1s ease 1.4s both;
+        }
+        .scroll-hint span { font-size: 0.65rem; color: rgba(255,255,255,0.25); letter-spacing: 3px; }
+        .scroll-line {
+            width: 1px; height: 55px;
+            background: linear-gradient(var(--gold), transparent);
+            animation: scrollLine 2s ease infinite;
+        }
+        @keyframes scrollLine {
+            0%{opacity:0;transform:scaleY(0);transform-origin:top}
+            50%{opacity:1}
+            100%{opacity:0;transform:scaleY(1);transform-origin:bottom}
+        }
+
+        /* ===== MARQUEE ===== */
+        .marquee-wrap {
+            background: var(--red); padding: 13px 0; overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .marquee-track {
+            display: flex; gap: 50px; width: max-content;
+            animation: marquee 28s linear infinite;
+        }
+        .marquee-item {
+            font-size: 0.8rem; font-weight: 700; letter-spacing: 3px;
+            color: rgba(255,255,255,0.85); white-space: nowrap;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .marquee-item::after { content: '✦'; color: var(--gold); font-size: 0.55rem; }
+        @keyframes marquee { to { transform: translateX(-50%); } }
+
+        /* ===== STATS ===== */
+        .stats {
+            display: grid; grid-template-columns: repeat(4,1fr);
+            background: #0a0303;
+        }
+        .stat {
+            padding: 48px 32px; text-align: center;
+            border-left: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.4s;
+        }
+        .stat:hover { background: rgba(200,16,46,0.05); }
+        .stat-num {
+            font-size: 3.2rem; font-weight: 900; line-height: 1;
+            background: linear-gradient(135deg, var(--gold), #fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+        .stat-label { color: rgba(255,255,255,0.35); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* ===== PRODUCTS ===== */
+        .products-section {
+            padding: 90px 48px;
+            position: relative;
+        }
+        /* giant watermark */
+        .products-section::before {
+            content: 'DULCESOL';
+            position: absolute; top: 50px; left: 50%; transform: translateX(-50%);
+            font-size: 11vw; font-weight: 900;
+            color: rgba(255,255,255,0.018);
+            white-space: nowrap; pointer-events: none; letter-spacing: 12px;
+        }
+
+        .section-header { text-align: center; margin-bottom: 60px; position: relative; z-index: 1; }
+        .section-tag {
+            color: var(--gold); font-size: 0.72rem; letter-spacing: 4px;
+            text-transform: uppercase; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .section-tag::before,.section-tag::after {
+            content:''; flex: 0 0 36px; height:1px; background:var(--gold); opacity:0.35;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 900; margin-bottom: 12px;
+        }
+        .section-desc { color: rgba(255,255,255,0.35); max-width: 480px; margin: 0 auto; line-height: 1.8; font-size: 0.95rem; }
+
+        /* category filter */
+        .filter-wrap {
+            display: flex; gap: 10px; justify-content: center;
+            flex-wrap: wrap; margin-bottom: 56px; position: relative; z-index: 1;
+        }
+        .filter-btn {
+            padding: 9px 26px; border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: rgba(255,255,255,0.45);
+            cursor: pointer; font-family: inherit; font-size: 0.88rem; font-weight: 600;
+            transition: all 0.3s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--red); border-color: var(--red);
+            color: white; box-shadow: 0 4px 18px rgba(200,16,46,0.35);
+        }
+
+        /* grid */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-            padding: 20px 30px;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 22px; position: relative; z-index: 1;
         }
         .product-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px; overflow: hidden;
+            transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s;
+            cursor: pointer;
+            animation: fadeUp 0.6s ease both;
         }
-        .product-card:hover { transform: translateY(-5px); }
-        .product-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(200,16,46,0.35);
+            box-shadow: 0 18px 55px rgba(200,16,46,0.14), 0 0 0 1px rgba(200,16,46,0.08);
         }
-        .card-body { padding: 15px; }
-        .card-body h3 { font-size: 16px; margin-bottom: 8px; color: #333; }
-        .card-body p { font-size: 13px; color: #777; margin-bottom: 10px; }
-        .price { color: #c0392b; font-size: 18px; font-weight: bold; }
-        .btn-detail {
-            display: block;
-            text-align: center;
-            background: #c0392b;
-            color: white;
-            padding: 8px;
-            border-radius: 8px;
-            text-decoration: none;
-            margin-top: 10px;
-            font-weight: bold;
+        .card-img {
+            height: 210px; overflow: hidden;
+            background: linear-gradient(135deg, rgba(200,16,46,0.08), rgba(15,5,5,0.6));
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
         }
-        .btn-detail:hover { background: #a93226; }
+        .card-img img {
+            width: 85%; height: 85%; object-fit: contain;
+            transition: transform 0.5s, filter 0.4s;
+            filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5));
+        }
+        .product-card:hover .card-img img {
+            transform: scale(1.1) translateY(-6px);
+            filter: drop-shadow(0 18px 36px rgba(200,16,46,0.3));
+        }
+        /* placeholder when no image */
+        .card-img .no-img {
+            font-size: 4.5rem;
+            filter: drop-shadow(0 6px 18px rgba(0,0,0,0.4));
+            transition: transform 0.5s;
+        }
+        .product-card:hover .card-img .no-img { transform: scale(1.15) translateY(-6px); }
 
-        /* الفوتر */
-        footer {
-            background: #222;
-            color: #aaa;
+        .card-badge {
+            position: absolute; top: 12px; right: 12px;
+            background: var(--red); color: white;
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 1px;
+            padding: 4px 11px; border-radius: 20px; text-transform: uppercase;
+        }
+        .card-body { padding: 20px; }
+        .card-cat { color: var(--gold); font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+        .card-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 7px; color: rgba(255,255,255,0.92); }
+        .card-desc { color: rgba(255,255,255,0.35); font-size: 0.82rem; line-height: 1.6; margin-bottom: 18px; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; }
+        .card-price { font-size: 1.1rem; font-weight: 800; color: var(--gold); }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--red); color: white; text-decoration: none;
+            padding: 9px 18px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 14px rgba(200,16,46,0.35);
+        }
+        .card-link:hover { transform: scale(1.07); box-shadow: 0 6px 22px rgba(200,16,46,0.55); }
+
+        /* available badge */
+        .available-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(39,174,96,0.12); color: #2ecc71;
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 1px;
+            padding: 3px 10px; border-radius: 20px;
+            border: 1px solid rgba(39,174,96,0.2);
+            margin-bottom: 14px;
+        }
+
+        /* ===== CTA ===== */
+        .cta-wrap { padding: 0 48px 80px; }
+        .cta-box {
+            border-radius: 26px; overflow: hidden;
+            background: var(--red); position: relative; padding: 70px 50px;
             text-align: center;
-            padding: 20px;
-            margin-top: 40px;
+        }
+        .cta-box::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 25% 50%, rgba(255,255,255,0.12), transparent 55%),
+                        radial-gradient(ellipse at 75% 50%, rgba(0,0,0,0.25), transparent 55%);
+        }
+        .cta-box * { position: relative; z-index: 1; }
+        .cta-label { color: rgba(255,255,255,0.55); font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 14px; }
+        .cta-title { font-size: clamp(1.6rem, 3.5vw, 2.8rem); font-weight: 900; margin-bottom: 12px; }
+        .cta-sub { color: rgba(255,255,255,0.65); margin-bottom: 36px; font-size: 1rem; }
+        .cta-contact {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: white; color: var(--red);
+            padding: 14px 34px; border-radius: 50px;
+            font-weight: 800; font-size: 1rem; text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+        }
+        .cta-contact:hover { transform: scale(1.05); box-shadow: 0 10px 32px rgba(0,0,0,0.3); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 50px 48px 24px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 20px;
+        }
+        .footer-logo { font-size: 1.3rem; font-weight: 900; color: var(--gold); }
+        .footer-copy { color: rgba(255,255,255,0.18); font-size: 0.8rem; }
+        .footer-link { color: rgba(255,255,255,0.3); text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .footer-link:hover { color: var(--gold); }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+        .reveal { opacity:0; transform:translateY(36px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity:1; transform:translateY(0); }
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:768px){
+            nav { padding: 14px 20px; }
+            .nav-subtitle { display: none; }
+            .stats { grid-template-columns: repeat(2,1fr); }
+            .products-section, .cta-wrap { padding: 70px 20px; }
+            footer { padding: 40px 20px; flex-direction: column; text-align: center; }
+            .cta-box { padding: 50px 24px; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>🍞 رواج الغذاء</h1>
-    <span>الوكيل الرسمي لـ Dulcesol في المملكة العربية السعودية</span>
-</header>
+<!-- NAVBAR -->
+<nav id="navbar">
+    <div class="logo">رواج <span>الغذاء</span></div>
+    <div class="nav-subtitle">الوكيل الرسمي لـ Dulcesol في المملكة العربية السعودية</div>
+</nav>
 
-<div class="hero">
-    <h2>منتجات Dulcesol الإسبانية</h2>
-    <p>جودة أوروبية عالية — متوفرة الآن في السعودية</p>
-</div>
+<!-- HERO -->
+<section class="hero">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="hero-ring"></div>
 
-<div class="categories">
-    {% for category in categories %}
-    <button class="cat-btn">{{ category.name }}</button>
-    {% endfor %}
-</div>
-
-<div class="products-grid">
-    {% for product in products %}
-    <div class="product-card">
-        {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-        {% else %}
-        <img src="https://via.placeholder.com/250x200?text=No+Image" alt="no image">
-        {% endif %}
-        <div class="card-body">
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description|truncatewords:10 }}</p>
-            <span class="price">{{ product.price }} ريال</span>
-            <a href="{% url 'product_detail' product.pk %}" class="btn-detail">عرض التفاصيل</a>
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="badge-dot"></span>
+            الوكيل الرسمي المعتمد • المملكة العربية السعودية
+        </div>
+        <h1>
+            منتجات Dulcesol
+            <span class="line2">الإسبانية الأصيلة</span>
+        </h1>
+        <p class="hero-sub">
+            جودة أوروبية عالية من قلب إسبانيا<br>
+            الآن متوفرة على موائدكم في المملكة
+        </p>
+        <div class="hero-btns">
+            <a href="#products" class="btn-red">🛍️ تصفح المنتجات</a>
+            <a href="#contact" class="btn-ghost">تواصل معنا</a>
         </div>
     </div>
-    {% endfor %}
+
+    <div class="scroll-hint">
+        <span>اكتشف</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+    <div class="marquee-track">
+        <div class="marquee-item">كرواسون فرنسي</div>
+        <div class="marquee-item">برجر بريوش</div>
+        <div class="marquee-item">خبز توست ذهبي</div>
+        <div class="marquee-item">بوكاديتوس</div>
+        <div class="marquee-item">DULCESOL SPAIN</div>
+        <div class="marquee-item">جودة أوروبية</div>
+        <div class="marquee-item">وكيل رسمي معتمد</div>
+        <div class="marquee-item">توصيل للمملكة</div>
+        <div class="marquee-item">كرواسون فرنسي</div>
+        <div class="marquee-item">برجر بريوش</div>
+        <div class="marquee-item">خبز توست ذهبي</div>
+        <div class="marquee-item">بوكاديتوس</div>
+        <div class="marquee-item">DULCESOL SPAIN</div>
+        <div class="marquee-item">جودة أوروبية</div>
+        <div class="marquee-item">وكيل رسمي معتمد</div>
+        <div class="marquee-item">توصيل للمملكة</div>
+    </div>
 </div>
 
+<!-- STATS -->
+<div class="stats reveal">
+    <div class="stat">
+        <div class="stat-num" data-target="60">0</div>
+        <div class="stat-label">سنة خبرة</div>
+    </div>
+    <div class="stat">
+        <div class="stat-num" data-target="200">0</div>
+        <div class="stat-label">منتج متنوع</div>
+    </div>
+    <div class="stat">
+        <div class="stat-num" data-target="30">0</div>
+        <div class="stat-label">دولة حول العالم</div>
+    </div>
+    <div class="stat">
+        <div class="stat-num" data-target="100">0</div>
+        <div class="stat-label">ضمان الجودة %</div>
+    </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+    <div class="section-header reveal">
+        <div class="section-tag">منتجاتنا</div>
+        <h2 class="section-title">اكتشف طعم إسبانيا<br>في كل قضمة</h2>
+        <p class="section-desc">منتجات مخبوزة بأفضل المكونات الأوروبية، الآن في المملكة</p>
+    </div>
+
+    <!-- category filter -->
+    <div class="filter-wrap reveal">
+        <button class="filter-btn active" onclick="filterProducts('all', this)">الكل</button>
+        {% for category in categories %}
+        <button class="filter-btn" onclick="filterProducts('{{ category.name }}', this)">{{ category.name }}</button>
+        {% endfor %}
+    </div>
+
+    <!-- products grid -->
+    <div class="products-grid" id="productsGrid">
+        {% for product in products %}
+        <div class="product-card" data-category="{{ product.category }}" style="animation-delay: {{ forloop.counter0 }}00ms">
+            <div class="card-img">
+                {% if forloop.first %}
+                <div class="card-badge">جديد</div>
+                {% endif %}
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <div class="no-img">🍞</div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="card-cat">{{ product.category }}</div>
+                <div class="card-name">{{ product.name }}</div>
+                <p class="card-desc">{{ product.description|truncatewords:12 }}</p>
+                {% if product.available %}
+                <div class="available-badge">✓ متوفر</div>
+                {% endif %}
+                <div class="card-footer">
+                    <span class="card-price">{{ product.price }} ريال</span>
+                    <a href="{% url 'product_detail' product.pk %}" class="card-link">التفاصيل ←</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p style="color:rgba(255,255,255,0.3); text-align:center; grid-column:1/-1; padding:60px">لا توجد منتجات متاحة حالياً</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-wrap" id="contact">
+    <div class="cta-box reveal">
+        <div class="cta-label">تواصل معنا</div>
+        <h2 class="cta-title">هل أنت موزع أو صاحب مطعم؟</h2>
+        <p class="cta-sub">احصل على أفضل الأسعار وشروط التوريد المميزة</p>
+        <a href="tel:+966" class="cta-contact">📞 تواصل الآن</a>
+    </div>
+</div>
+
+<!-- FOOTER -->
 <footer>
-    <p>© 2026 رواج الغذاء — الوكيل الرسمي لـ Dulcesol 🇪🇸 في المملكة العربية السعودية 🇸🇦</p>
+    <div class="footer-logo">رواج الغذاء 🍞</div>
+    <p class="footer-copy">© 2026 رواج الغذاء — الوكيل الرسمي لـ Dulcesol 🇪🇸 في المملكة العربية السعودية 🇸🇦</p>
+    <a href="/admin" class="footer-link">لوحة التحكم</a>
 </footer>
+
+<script>
+// Navbar scroll
+window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Counter animation
+const counterObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.querySelectorAll('[data-target]').forEach(el => {
+            const target = +el.dataset.target;
+            let count = 0; const step = target / 55;
+            const timer = setInterval(() => {
+                count += step;
+                if (count >= target) { count = target; clearInterval(timer); }
+                el.textContent = Math.floor(count) + (target === 100 ? '%' : '+');
+            }, 22);
+        });
+        counterObs.unobserve(entry.target);
+    });
+});
+document.querySelectorAll('.stats').forEach(el => counterObs.observe(el));
+
+// Category filter
+function filterProducts(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.product-card').forEach(card => {
+        const show = cat === 'all' || card.dataset.category === cat;
+        card.style.display = show ? 'block' : 'none';
+        if (show) {
+            card.style.animation = 'none';
+            card.offsetHeight; // reflow
+            card.style.animation = 'fadeUp 0.5s ease both';
+        }
+    });
+}
+
+// Smooth scroll for hero button
+document.querySelector('a[href="#products"]').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+});
+</script>
 
 </body>
 </html>
